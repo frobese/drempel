@@ -37,7 +37,8 @@ defmodule Drempel.Mixfile do
   end
 
   defp deps do
-    [{:excoveralls, "~> 0.5", only: :test},
+    [{:phoenix, "~> 1.1", optional: true},
+     {:excoveralls, "~> 0.5", only: :test},
      {:credo, "~> 0.3", only: [:dev, :test]},
      {:dogma, "~> 0.1", only: :dev},
      {:earmark, "~> 0.2", only: :dev},
