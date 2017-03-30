@@ -4,14 +4,14 @@ defmodule Drempel.Mixfile do
   def project do
     [app: :drempel,
      version: "0.1.0",
-     source_url: "https://github.com/frobese/drempel",
+     source_url: "https://github.com/active-group/drempel",
      elixir: "~> 1.2",
-     package: package,
-     description: description,
-     docs: docs,
+     package: package(),
+     description: description(),
+     docs: docs(),
      test_coverage: [tool: ExCoveralls],
      preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test],
-     deps: deps]
+     deps: deps()]
   end
 
   def application do
@@ -20,9 +20,9 @@ defmodule Drempel.Mixfile do
   end
 
   defp package do
-    [maintainers: ["Christian Zuckschwerdt"],
+    [maintainers: ["Simon Schulz", "Tim Digel"],
      licenses: ["MIT"],
-     links: %{"GitHub" => "https://github.com/frobese/drempel"}]
+     links: %{"GitHub" => "https://github.com/active-group/drempel"}]
   end
 
   defp description do
