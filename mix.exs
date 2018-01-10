@@ -4,9 +4,9 @@ defmodule Drempel.Mixfile do
   def project do
     [
       app: :drempel,
-      version: "0.1.0",
+      version: "0.1.3",
       source_url: "https://github.com/frobese/drempel",
-      elixir: "~> 1.2",
+      elixir: "~> 1.5",
       package: package(),
       description: description(),
       docs: docs(),
@@ -41,12 +41,12 @@ defmodule Drempel.Mixfile do
 
   defp deps do
     [
-      {:phoenix, "~> 1.1", optional: true},
-      {:excoveralls, "~> 0.5", only: :test},
-      {:credo, "~> 0.3", only: [:dev, :test]},
+      {:phoenix, "~> 1.3", optional: true},
+      {:excoveralls, "~> 0.10", only: :test},
+      {:credo, "~> 0.10", only: [:dev, :test]},
       {:dogma, "~> 0.1", only: :dev},
-      {:earmark, "~> 0.2", only: :dev},
-      {:ex_doc, "~> 0.11", only: :dev}
+      {:earmark, "~> 1.2", only: :dev},
+      {:ex_doc, "~> 0.19", only: :dev}
     ]
   end
 end

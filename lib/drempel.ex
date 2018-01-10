@@ -72,7 +72,7 @@ defmodule Drempel do
       cleanup_interval: Keyword.get(opts, :cleanup_interval, @cleanup_interval),
       stale_timeout:    Keyword.get(opts, :stale_timeout, @stale_timeout),
       backoff_fun:      Keyword.get(opts, :backoff_fun, @backoff_fun)}
-    Process.send_after(self, :cleanup, state.cleanup_interval)
+    Process.send_after(self(), :cleanup, state.cleanup_interval)
     :ets.new(__MODULE__, [:named_table])
     {:ok, state}
   end
@@ -107,7 +107,7 @@ defmodule Drempel do
     match_spec = [{{:_, :_, :"$1"}, [{:<, :"$1", stale_time}], [true]}]
     :ets.select_delete(__MODULE__, match_spec)
 
-    Process.send_after(self, :cleanup, state.cleanup_interval)
+    Process.send_after(self(), :cleanup, state.cleanup_interval)
     {:noreply, state}
   end
 end
