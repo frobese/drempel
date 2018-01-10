@@ -9,12 +9,12 @@ defmodule Drempel.App do
     import Supervisor.Spec, warn: false
 
     children = [
-      worker(Drempel, [config])
+      worker(Drempel, [config()])
     ]
 
     opts = [strategy: :one_for_one, name: Drempel.Supervisor]
     Supervisor.start_link(children, opts)
   end
 
-  defp config, do: Application.get_env(:drempel, Drempel, [])
+  defp config(), do: Application.get_env(:drempel, Drempel, [])
 end
