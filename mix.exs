@@ -3,7 +3,7 @@ defmodule Drempel.Mixfile do
 
   def project do
     [app: :drempel,
-     version: "0.1.1",
+     version: "0.1.3",
      source_url: "https://github.com/active-group/drempel",
      elixir: "~> 1.7",
      package: package(),
