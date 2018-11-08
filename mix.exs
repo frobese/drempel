@@ -5,7 +5,7 @@ defmodule Drempel.Mixfile do
     [app: :drempel,
      version: "0.1.3",
      source_url: "https://github.com/active-group/drempel",
-     elixir: "~> 1.7",
+     elixir: "~> 1.5",
      package: package(),
      description: description(),
      docs: docs(),
