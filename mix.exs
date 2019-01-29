@@ -44,7 +44,6 @@ defmodule Drempel.Mixfile do
       {:phoenix, "~> 1.3", optional: true},
       {:excoveralls, "~> 0.10", only: :test},
       {:credo, "~> 0.10", only: [:dev, :test]},
-      {:dogma, "~> 0.1", only: :dev},
       {:earmark, "~> 1.2", only: :dev},
       {:ex_doc, "~> 0.19", only: :dev}
     ]

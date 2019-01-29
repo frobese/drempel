@@ -7,8 +7,10 @@ defmodule Drempel do
   alias Drempel.Backoff
 
   # fallback default opts
-  @cleanup_interval 5 * 1000  # milliseconds, i.e. 5 seconds
-  @stale_timeout 8 * 60 * 60 * 1000  # milliseconds, i.e. 8 hours
+  # milliseconds, i.e. 5 seconds
+  @cleanup_interval 5 * 1000
+  # milliseconds, i.e. 8 hours
+  @stale_timeout 8 * 60 * 60 * 1000
   @backoff_fun &Backoff.exponential_backoff/1
 
   # Client API
@@ -17,7 +19,7 @@ defmodule Drempel do
   Starts the Server.
   """
   def start_link(opts \\ []) do
-    GenServer.start_link __MODULE__, opts, name: __MODULE__
+    GenServer.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
   @doc """
@@ -26,7 +28,7 @@ defmodule Drempel do
   Returns `{:ok, delay}` if the key exists in the bucket, `:error` otherwise.
   """
   def fetch(bucket, key) do
-    GenServer.call __MODULE__, {:fetch, bucket, key}
+    GenServer.call(__MODULE__, {:fetch, bucket, key})
   end
 
   @doc """
@@ -34,7 +36,7 @@ defmodule Drempel do
   If `bucket` doesn't contain `key`, returns `default` (or `0` if not provided).
   """
   def get(bucket, key, default \\ 0) do
-    case GenServer.call __MODULE__, {:fetch, bucket, key} do
+    case GenServer.call(__MODULE__, {:fetch, bucket, key}) do
       {:ok, delay} -> delay
       _ -> default
     end
@@ -46,15 +48,19 @@ defmodule Drempel do
   If `bucket` doesn't contain `key`, returns `default` (or `0` if not provided).
   """
   def update(bucket, key, default \\ 0) do
-    delay = case GenServer.call __MODULE__, {:fetch, bucket, key} do
-      {:ok, delay} -> delay
-      _ -> default
-    end
+    delay =
+      case GenServer.call(__MODULE__, {:fetch, bucket, key}) do
+        {:ok, delay} -> delay
+        _ -> default
+      end
+
     case delay do
       0 ->
-        GenServer.cast __MODULE__, {:put, bucket, key}
+        GenServer.cast(__MODULE__, {:put, bucket, key})
         0
-      other -> other
+
+      other ->
+        other
     end
   end
 
@@ -62,7 +68,7 @@ defmodule Drempel do
   Adds a hit to the term `key` in a given term `bucket`.
   """
   def put(bucket, key) do
-    GenServer.cast __MODULE__, {:put, bucket, key}
+    GenServer.cast(__MODULE__, {:put, bucket, key})
   end
 
   # Server Callbacks
@@ -70,8 +76,10 @@ defmodule Drempel do
   def init(opts) do
     state = %{
       cleanup_interval: Keyword.get(opts, :cleanup_interval, @cleanup_interval),
-      stale_timeout:    Keyword.get(opts, :stale_timeout, @stale_timeout),
-      backoff_fun:      Keyword.get(opts, :backoff_fun, @backoff_fun)}
+      stale_timeout: Keyword.get(opts, :stale_timeout, @stale_timeout),
+      backoff_fun: Keyword.get(opts, :backoff_fun, @backoff_fun)
+    }
+
     Process.send_after(self(), :cleanup, state.cleanup_interval)
     :ets.new(__MODULE__, [:named_table])
     {:ok, state}
@@ -79,16 +87,20 @@ defmodule Drempel do
 
   def handle_call({:fetch, bucket, key}, _from, state) do
     key = {bucket, key}
+
     case :ets.lookup(__MODULE__, key) do
       [{_key, hits, access}] ->
         now = :erlang.monotonic_time(:milli_seconds)
         retry_delay = state.backoff_fun.(hits)
+
         case access + retry_delay - now do
           retry_time when retry_time > 0 ->
             {:reply, {:ok, retry_time}, state}
+
           _ ->
             {:reply, {:ok, 0}, state}
         end
+
       [] ->
         {:reply, :error, state}
     end

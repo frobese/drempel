@@ -14,9 +14,12 @@ if Code.ensure_loaded?(Phoenix.Controller) do
     @doc false
     def init(opts) do
       opts = Enum.into(opts, %{})
-      %{handler: {Map.get(opts, :handler, __MODULE__), :rate_exceeded},
+
+      %{
+        handler: {Map.get(opts, :handler, __MODULE__), :rate_exceeded},
         key: Map.get(opts, :key, nil),
-        bucket: Map.get(opts, :bucket, nil)}
+        bucket: Map.get(opts, :bucket, nil)
+      }
     end
 
     @doc false
@@ -39,7 +42,9 @@ if Code.ensure_loaded?(Phoenix.Controller) do
       bucket = Map.get(opts, :bucket) || {controller_module(conn), action_name(conn)}
 
       case Drempel.update(bucket, key) do
-        0 -> conn
+        0 ->
+          conn
+
         delay ->
           conn
           |> Conn.assign(:backoff, delay)
@@ -55,9 +60,10 @@ if Code.ensure_loaded?(Phoenix.Controller) do
     end
 
     defp handle_limit(conn, delay, opts) do
-      conn = conn
+      conn =
+        conn
         |> Conn.assign(:backoff, delay)
-        |> Conn.halt
+        |> Conn.halt()
 
       {mod, meth} = Map.get(opts, :handler)
       apply(mod, meth, [conn, conn.params])
