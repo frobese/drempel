@@ -24,6 +24,7 @@ defmodule Drempel.Mixfile do
     [
       maintainers: ["Christian Zuckschwerdt"],
       licenses: ["MIT"],
+      files: ~w(lib .formatter.exs mix.exs README.md LICENSE.txt),
       links: %{"GitHub" => "https://github.com/frobese/drempel"}
     ]
   end
