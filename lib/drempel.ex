@@ -11,7 +11,7 @@ defmodule Drempel do
   @cleanup_interval 5 * 1000
   # milliseconds, i.e. 8 hours
   @stale_timeout 8 * 60 * 60 * 1000
-  @backoff_fun &Backoff.exponential_backoff/1
+  @backoff_fun {Backoff, :exponential_backoff}
 
   # Client API
 
@@ -91,7 +91,8 @@ defmodule Drempel do
     case :ets.lookup(__MODULE__, key) do
       [{_key, hits, access}] ->
         now = :erlang.monotonic_time(:milli_seconds)
-        retry_delay = state.backoff_fun.(hits)
+        {mod, fun} = state.backoff_fun
+        retry_delay = apply(mod, fun, [hits])
 
         case access + retry_delay - now do
           retry_time when retry_time > 0 ->
